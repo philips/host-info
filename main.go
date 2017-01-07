@@ -127,6 +127,7 @@ func main() {
 
 	hostInfo := NewHost()
 
+	// Hello world
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("request from %v\n", r.RemoteAddr)
 		hostInfo.Write(w)
