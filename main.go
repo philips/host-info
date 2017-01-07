@@ -18,7 +18,7 @@ import (
 const (
 	home = `<html>
 	<head>
-		<title>{{.Hostname}} Info</title>
+		<title>Hello Hyderabad {{.Hostname}} Info</title>
 		<link rel="shortcut icon" href="/icons/{{.Hostname}}.png" type="image/x-icon" />
 	</head>
 	<body>
