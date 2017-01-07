@@ -14,5 +14,10 @@ kubectl proxy
 
 Visit http://localhost:8001/api/v1/proxy/namespaces/default/services/host-info/
 
+```
+kubectl scale --replicas=5 deployment/host-info
+```
+
+
 
 ![host-info screenshot](screenshot.png)
