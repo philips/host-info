@@ -12,13 +12,14 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/philips/hacks/host-info/Godeps/_workspace/src/github.com/dgryski/go-identicon"
+	"github.com/dgryski/go-identicon"
+	"github.com/prometheus/client_golang/prometheus"
 )
 
 const (
 	home = `<html>
 	<head>
-		<title>Hello Hyderabad {{.Hostname}} Info</title>
+		<title>{{.Hostname}} Info</title>
 		<link rel="shortcut icon" href="/icons/{{.Hostname}}.png" type="image/x-icon" />
 	</head>
 	<body>
@@ -38,6 +39,20 @@ const (
 	</body>
 </html>`
 )
+
+var (
+	pathRequests = prometheus.NewCounterVec(
+		prometheus.CounterOpts{
+			Name: "http_path_requests_total",
+			Help: "Number of HTTP requests for a path.",
+		},
+		[]string{"path"},
+	)
+)
+
+func init() {
+	prometheus.MustRegister(pathRequests)
+}
 
 type Host struct {
 	VisitCount uint64
@@ -60,6 +75,8 @@ func NewHost() Host {
 
 func (h *Host) Write(w io.Writer) {
 	atomic.AddUint64(&h.VisitCount, 1)
+	pathRequests.With(prometheus.Labels{"path": "/"}).Inc()
+
 	tmpl, err := template.New("index").Parse(home)
 	if err != nil {
 		panic(err)
@@ -127,7 +144,9 @@ func main() {
 
 	hostInfo := NewHost()
 
-	// Hello world
+	// Expose the registered metrics via HTTP.
+	http.Handle("/metrics", prometheus.Handler())
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Printf("request from %v\n", r.RemoteAddr)
 		hostInfo.Write(w)
