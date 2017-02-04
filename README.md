@@ -21,4 +21,4 @@ kubectl scale --replicas=5 deployment/host-info
 
 This app also exports Prometheus metrics, perfect for consumptin by the [Prometheus Operator](https://coreos.com/blog/the-prometheus-operator.html). Demo below:
 
-![host-info screenshot](http://i.imgur.com/kIJJRpV.gif)
+[![host-info screenshot](screenshot.png)](http://i.imgur.com/kIJJRpV.gif)
